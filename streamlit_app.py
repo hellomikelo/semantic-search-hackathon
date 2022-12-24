@@ -27,6 +27,9 @@ api_key = os.getenv('COHERE_API_KEY')
 co = cohere.Client(api_key)
 
 with st.sidebar:
+    # podcast_name = st.selectbox(
+    #     'Which podcast to search?',
+    #     ('', 'TFTS', 'McKinsey'))
     podcast_name = st.radio('Which podcast to search?', ('TFTS', 'McKinsey'))
     st.write('---\n')
     st.caption('''[Think Fast, Talk Smart](https://www.gsb.stanford.edu/business-podcasts/think-fast-talk-smart-podcast) (TFTS) is a podcast produced by Stanford Graduate School of Business. Each episode provides concrete, easy-to-implement tools and techniques to help you hone and enhance your communication skills.  
@@ -34,10 +37,11 @@ with st.sidebar:
     ''')
 podcast_name = podcast_name.lower()
 
+# if podcast_name:
 df = pd.read_csv(f'./{podcast_name}_podcasts_embeds.csv', index_col=0, converters={'paragraphs': lambda x: x[2:-2].split("', '")})
 texts = df.intro.to_numpy()
 
-@st.cache(persist=True, allow_output_mutation=False, show_spinner=False, suppress_st_warning=True)
+
 def hash_file_reference(file_reference):
     return f'./{podcast_name}_podcasts.ann'
 
@@ -104,12 +108,15 @@ def format_results(results_df):
 
 # Streamlit app
 st.title("🔍 Info Insighter")
-query = st.text_input('What ideas would you like to listen to?', 'tips on how to accomplish more at work')
+query = st.text_input('What ideas would you like to explore via podcasts?', 'tips on how to be successful at work')
+# st.button(label="Get podcasts", key="get_pod")
+# if st.session_state.get("get_pod"):
 search_index = load_index()
 results = get_search_results(query, search_index)
 formatted_results = format_results(results)
 st.write('---\nTop 5 recommendations:')
 st.write(formatted_results)
+
 
 # TODO: summarize episode chat
 # TODO: follow up exercise questions
