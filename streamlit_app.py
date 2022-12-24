@@ -37,7 +37,7 @@ podcast_name = podcast_name.lower()
 df = pd.read_csv(f'./{podcast_name}_podcasts_embeds.csv', index_col=0, converters={'paragraphs': lambda x: x[2:-2].split("', '")})
 texts = df.intro.to_numpy()
 
-
+@st.cache(persist=True, allow_output_mutation=False, show_spinner=False, suppress_st_warning=True)
 def hash_file_reference(file_reference):
     return f'./{podcast_name}_podcasts.ann'
 
